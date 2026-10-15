@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Daily Clinical Skincare Regimen{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">🧴 Step-by-Step Regimen</span>
+  <h1>Daily Clinical Regimen Builder</h1>
+  <p>Structure your Morning and Evening active ingredient rituals for maximum dermatological efficacy.</p>
+</div>
+
+<div class="grid-2">
+  <!-- Add Step Form -->
+  <div class="card" style="height: fit-content;">
+    <h3 class="card-title">
+      <span>➕</span> Add Formulation to Regimen
+    </h3>
+
+    <form action="{{ url_for('routine') }}" method="POST" id="routineForm">
+      <div class="form-group">
+        <label class="form-label" for="product">Formulation & Active Name</label>
+        <input type="text" id="product" name="product" class="form-input" placeholder="e.g. 10% Niacinamide Serum + Zinc" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="routine_time">Application Phase</label>
+        <select name="routine_time" id="routine_time" class="form-select" required>
+          <option value="Morning">☀️ Morning (AM Regimen)</option>
+          <option value="Night">🌙 Night (PM Restorative)</option>
+          <option value="Both (AM & PM)">☀️🌙 Both Morning & Night</option>
+          <option value="Weekly Treatment">✨ Weekly Treatment (1-2x per week)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="notes">Application Protocol & Layering Order</label>
+        <textarea id="notes" name="notes" class="form-textarea" placeholder="e.g. Step 2: Apply 3-4 drops to cleansed, damp skin before barrier moisturizer."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Add to Regimen 🧪</button>
+    </form>
+
+    <!-- Quick Essential Presets -->
+    <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1.5px solid var(--border-subtle);">
+      <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.6rem;">
+        ⚡ Fast Clinical Presets:
+      </span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setRoutinePreset('2% Salicylic Acid Acne Control Cleanser', 'Morning', 'Step 1: Cleanse with lukewarm water for 60 seconds.')">🫧 Salicylic Cleanser</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setRoutinePreset('10% Niacinamide + 1% Zinc Blemish Serum', 'Morning', 'Step 2: Apply 3 drops to soothe redness and minimize pores.')">🧪 Niacinamide Serum</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setRoutinePreset('Ultra-Light Fluid Sunscreen SPF 50+ PA++++', 'Morning', 'Step 4: Apply 2 finger-lengths 15 mins before sun exposure.')">☀️ SPF 50+ Sunscreen</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setRoutinePreset('0.3% Retinol in Squalane Night Elixir', 'Night', 'Step 2: Apply 3 drops on dry skin 3 nights per week.')">🌙 0.3% Retinol Night</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Routine Steps List -->
+  <div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+      <h3 style="font-size: 1.35rem; margin: 0; color: var(--derma-navy);">
+        <span>Your Active Regimen</span>
+      </h3>
+      <span class="badge badge-sage">{{ routines|length }} Total Steps</span>
+    </div>
+
+    <!-- Routine Filter Tabs -->
+    {% if routines %}
+      <div class="routine-tabs-bar">
+        <button class="routine-tab-btn active" onclick="filterRoutineTime('all', this)">All Steps</button>
+        <button class="routine-tab-btn" onclick="filterRoutineTime('Morning', this)">☀️ Morning</button>
+        <button class="routine-tab-btn" onclick="filterRoutineTime('Night', this)">🌙 Night</button>
+        <button class="routine-tab-btn" onclick="filterRoutineTime('Weekly', this)">✨ Weekly</button>
+      </div>
+
+      <div id="routineList">
+        {% for item in routines %}
+          <div class="item-card routine-item-row" data-time="{{ item.routine_time }}">
+            <div class="item-content">
+              <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                <span class="badge {% if 'Morning' in item.routine_time %}badge-gold{% elif 'Night' in item.routine_time %}badge-sage{% else %}badge-rose{% endif %}">
+                  {{ item.routine_time }}
+                </span>
+                <strong style="font-size: 1.05rem; color: var(--derma-navy);">{{ item.product }}</strong>
+              </div>
+
+              {% if item.notes %}
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+                  {{ item.notes }}
+                </p>
+              {% endif %}
+            </div>
+
+            <a href="{{ url_for('delete_routine', id=item.id) }}" class="btn-danger" onclick="return confirm('Remove this step from your regimen?');" title="Delete Step">
+              ✕ Remove
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card empty-state">
+        <div class="empty-state-icon">🧴</div>
+        <h3>Your Regimen is Empty</h3>
+        <p>Start by adding your morning cleanser, active serum, moisturizer, or broad-spectrum sunscreen using the form on the left.</p>
+        <a href="{{ url_for('products') }}" class="btn btn-secondary" style="font-size: 0.85rem;">Browse Curated Formulations →</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function setRoutinePreset(product, time, notes) {
+    document.getElementById('product').value = product;
+    document.getElementById('routine_time').value = time;
+    document.getElementById('notes').value = notes;
+    const form = document.getElementById('routineForm');
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function filterRoutineTime(filter, btn) {
+    document.querySelectorAll('.routine-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const rows = document.querySelectorAll('.routine-item-row');
+    rows.forEach(r => {
+      const time = r.getAttribute('data-time') || '';
+      if (filter === 'all' || time.includes(filter) || (filter === 'Morning' && time.includes('Both')) || (filter === 'Night' && time.includes('Both'))) {
+        r.style.display = 'flex';
+      } else {
+        r.style.display = 'none';
+      }
+    });
+  }
+</script>
+{% endblock %}

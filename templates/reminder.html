@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Regimen Reminders & SPF Alarms{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">⏰ Active Consistency Alerts</span>
+  <h1>Skincare Reminders & SPF Alarms</h1>
+  <p>Set daily time reminders for morning SPF re-application, evening active treatments, and weekly clinical peels.</p>
+</div>
+
+<div class="grid-2">
+  <!-- Add Reminder Form -->
+  <div class="card" style="height: fit-content;">
+    <h3 class="card-title">
+      <span>🔔</span> Schedule Regimen Alert
+    </h3>
+
+    <form action="{{ url_for('reminder') }}" method="POST" id="reminderForm">
+      <div class="form-group">
+        <label class="form-label" for="title">Alert Activity / Formulation</label>
+        <input type="text" id="title" name="title" class="form-input" placeholder="e.g. Reapply Ultra-Light SPF 50+ Sunscreen" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reminder_time">Time of Day</label>
+        <input type="time" id="reminder_time" name="reminder_time" class="form-input" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Schedule Alert ⏰</button>
+    </form>
+
+    <!-- Quick Presets -->
+    <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1.5px solid var(--border-subtle);">
+      <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.6rem;">
+        ⚡ Fast Routine Presets:
+      </span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setPreset('Morning Cleanser & SPF 50+ Broad Spectrum', '08:00')">☀️ Morning SPF (8:00 AM)</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setPreset('Midday SPF 50 Reapplication (Every 3-4 Hours)', '13:00')">☀️ Reapply SPF (1:00 PM)</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setPreset('Evening Retinol 0.3% & Ceramide Barrier Cream', '21:30')">🌙 Night Actives (9:30 PM)</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setPreset('Sunday AHA 30% + BHA 2% Peeling Solution Mask', '18:00')">🌸 Weekly Peel (6:00 PM)</button>
+      </div>
+    </div>
+
+    <!-- Alarm Simulation Sound Tester -->
+    <div style="margin-top: 1.2rem; padding: 0.85rem 1rem; background: var(--derma-cyan-soft); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; border: 1px solid rgba(0, 141, 218, 0.2);">
+      <span style="font-size: 0.84rem; color: var(--derma-navy); font-weight: 600;">
+        🎵 Audio Chime Alert:
+      </span>
+      <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.3rem 0.75rem;" onclick="playGlowChime()">
+        ▶ Test Chime
+      </button>
+    </div>
+  </div>
+
+  <!-- Reminders List -->
+  <div>
+    <h3 style="font-size: 1.35rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; color: var(--derma-navy);">
+      <span>Active Schedules</span>
+      <span class="badge badge-sage">{{ reminders|length }} Scheduled</span>
+    </h3>
+
+    {% if reminders %}
+      {% for item in reminders %}
+        <div class="item-card">
+          <div class="item-content">
+            <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+              <span class="badge badge-time">🕒 {{ item.reminder_time }}</span>
+              <strong style="font-size: 1.05rem; color: var(--derma-navy);">{{ item.title }}</strong>
+            </div>
+          </div>
+
+          <a href="{{ url_for('delete_reminder', id=item.id) }}" class="btn-danger" onclick="return confirm('Delete this reminder schedule?');" title="Delete Reminder">
+            ✕ Delete
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="card empty-state">
+        <div class="empty-state-icon">⏰</div>
+        <h3>No Reminders Configured</h3>
+        <p>Stay consistent with active ingredient applications by setting daily sunscreen re-application prompts and nightly active alerts.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function setPreset(title, time) {
+    document.getElementById('title').value = title;
+    document.getElementById('reminder_time').value = time;
+    const form = document.getElementById('reminderForm');
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Web Audio gentle skincare chime
+  function playGlowChime() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const playNote = (freq, startTime, duration) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        
+        gain.gain.setValueAtTime(0.2, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      };
+
+      const now = ctx.currentTime;
+      playNote(523.25, now, 0.6);        // C5
+      playNote(659.25, now + 0.15, 0.6); // E5
+      playNote(783.99, now + 0.3, 0.8);  // G5
+      playNote(1046.50, now + 0.45, 1.2);// C6
+    } catch(e) {
+      console.log('Audio test error:', e);
+    }
+  }
+</script>
+{% endblock %}

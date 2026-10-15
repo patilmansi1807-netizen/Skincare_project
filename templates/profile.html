@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | My Clinical Skin ID Profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">👤 Personal Skin ID</span>
+  <h1>My Clinical Skin ID Profile</h1>
+  <p>Your saved clinical skin parameters, primary concern focus, and personalized active ingredient profile.</p>
+</div>
+
+<div class="grid-2">
+  <!-- Skin ID Card Display -->
+  <div class="card" style="background: linear-gradient(145deg, #FFFFFF 0%, #F0F9FF 100%); border: 1.5px solid #BAE6FD;">
+    <h3 class="card-title" style="color: var(--derma-navy);">
+      <span>✨</span> Active GlowCare Skin ID
+    </h3>
+
+    {% if profile %}
+      <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(186, 230, 253, 0.8);">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--derma-cyan-soft); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid var(--derma-cyan); color: var(--derma-cyan);">
+          🧪
+        </div>
+        <div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 0.15rem; color: var(--derma-navy);">{{ profile.name }}</h2>
+          <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">Age: {{ profile.age }} years</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">Skin Classification:</span>
+          <span class="badge badge-sage" style="font-size: 0.88rem;">{{ profile.skin_type }}</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">Primary Target Concern:</span>
+          <span class="badge badge-rose" style="font-size: 0.88rem;">{{ profile.concern }}</span>
+        </div>
+      </div>
+
+      <div style="background: var(--derma-cyan-soft); padding: 1.1rem; border-radius: var(--radius-md); font-size: 0.88rem; color: var(--derma-navy); margin-top: 1rem; border: 1px solid rgba(0, 141, 218, 0.2);">
+        🧪 <strong>Dermatologist Tip:</strong> Keep your Skin ID updated as seasonal humidity changes and active tolerance increases.
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <a href="{{ url_for('analyze', skin_type=profile.skin_type, concern=profile.concern) }}" class="btn btn-primary btn-block">
+          Run Instant AI Skin Assessment →
+        </a>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <h3>No Skin ID Saved Yet</h3>
+        <p>Complete the clinical form on the right to store your personalized skin parameters and active tolerances.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Profile Form Card -->
+  <div class="card">
+    <h3 class="card-title" style="color: var(--derma-navy);">
+      <span>✏️</span> {% if profile %}Update{% else %}Create{% endif %} Skin Profile
+    </h3>
+
+    <form action="{{ url_for('profile') }}" method="POST">
+      <div class="form-group">
+        <label class="form-label" for="name">Your Full Name</label>
+        <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Mansi Sharma" value="{{ profile.name if profile else '' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="age">Age</label>
+        <input type="number" id="age" name="age" class="form-input" placeholder="e.g. 24" value="{{ profile.age if profile else '' }}" min="10" max="110" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="profile_skin_type">Skin Classification</label>
+        <select name="skin_type" id="profile_skin_type" class="form-select" required>
+          <option value="Oily" {% if profile and profile.skin_type == 'Oily' %}selected{% endif %}>Oily (Shine prone, enlarged pores)</option>
+          <option value="Dry" {% if profile and profile.skin_type == 'Dry' %}selected{% endif %}>Dry (Flaky, tight feeling)</option>
+          <option value="Combination" {% if profile and profile.skin_type == 'Combination' %}selected{% endif %}>Combination (T-Zone shine, normal cheeks)</option>
+          <option value="Sensitive" {% if profile and profile.skin_type == 'Sensitive' %}selected{% endif %}>Sensitive (Easily flushed, reactive)</option>
+          <option value="Normal" {% if profile and profile.skin_type == 'Normal' %}selected{% endif %}>Normal (Balanced hydration mantle)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="profile_concern">Primary Target Goal / Concern</label>
+        <select name="concern" id="profile_concern" class="form-select" required>
+          <option value="Acne" {% if profile and profile.concern == 'Acne' %}selected{% endif %}>Acne & Active Breakouts</option>
+          <option value="Dryness" {% if profile and profile.concern == 'Dryness' %}selected{% endif %}>Dehydration & Barrier Repair</option>
+          <option value="Pigmentation" {% if profile and profile.concern == 'Pigmentation' %}selected{% endif %}>Dark Spots & Hyperpigmentation</option>
+          <option value="Dark Circles" {% if profile and profile.concern == 'Dark Circles' %}selected{% endif %}>Under-Eye Dark Circles</option>
+          <option value="Aging" {% if profile and profile.concern == 'Aging' %}selected{% endif %}>Fine Lines & Anti-Aging</option>
+          <option value="No Major Concern" {% if profile and profile.concern == 'No Major Concern' %}selected{% endif %}>Healthy Glow & Maintenance</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Save Skin ID Profile 💾</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

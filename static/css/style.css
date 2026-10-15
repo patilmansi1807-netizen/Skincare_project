@@ -1,0 +1,1613 @@
+/* ===================================================
+   GlowCare - Clinical Skincare Design System
+   Inspired by Science-Backed, Dermatologist Designed Skincare
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+
+:root {
+  /* The Derma Co Clinical Color Palette */
+  --derma-navy: #0B192C;          /* Deep Clinical Navy */
+  --derma-navy-light: #1E3E62;
+  --derma-cyan: #008DDA;          /* Vibrant Derma Cyan */
+  --derma-cyan-hover: #0077BA;
+  --derma-cyan-soft: #E8F9FF;     /* Ice Blue Accent */
+  --derma-teal: #028090;          /* Potent Active Teal */
+  --derma-teal-soft: #E0F7F6;
+  --derma-coral: #FF6B6B;         /* High-converting Accent */
+  --derma-coral-soft: #FFF0F0;
+  --derma-amber: #F59E0B;         /* Review Gold */
+  --derma-green: #10B981;         /* Safe & Clinically Proven */
+  
+  --bg-body: #F8FAFC;             /* Clinical Crisp Canvas */
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F1F5F9;
+  --bg-dark: #07101E;
+  
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  
+  --border-subtle: #E2E8F0;
+  --border-focus: #008DDA;
+  
+  --shadow-sm: 0 1px 3px rgba(11, 25, 44, 0.05), 0 1px 2px rgba(11, 25, 44, 0.03);
+  --shadow-md: 0 4px 16px rgba(11, 25, 44, 0.08), 0 2px 4px rgba(11, 25, 44, 0.04);
+  --shadow-lg: 0 12px 32px rgba(11, 25, 44, 0.12), 0 4px 12px rgba(11, 25, 44, 0.06);
+  --shadow-glow: 0 0 24px rgba(0, 141, 218, 0.28);
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Global Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .heading-font {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  color: var(--derma-navy);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--derma-cyan);
+}
+
+/* ================= Announcement Ticker Banner ================= */
+.announcement-bar {
+  background: var(--derma-navy);
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  text-align: center;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.announcement-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.announcement-item .highlight {
+  color: #38BDF8;
+}
+
+/* ================= Flash Notifications / Toasts ================= */
+.flash-container {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 420px;
+  width: calc(100% - 48px);
+  pointer-events: none;
+}
+
+.flash-toast {
+  pointer-events: auto;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border-left: 5px solid var(--derma-cyan);
+  border: 1px solid var(--border-subtle);
+  border-left-width: 5px;
+}
+
+@keyframes slideInToast {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.flash-success {
+  border-left-color: #10B981;
+  color: #065F46;
+}
+
+.flash-danger {
+  border-left-color: #EF4444;
+  color: #991B1B;
+}
+
+.flash-info {
+  border-left-color: var(--derma-cyan);
+  color: #0369A1;
+}
+
+.flash-warning {
+  border-left-color: #F59E0B;
+  color: #92400E;
+}
+
+.flash-close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--text-light);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.2rem;
+  transition: var(--transition-fast);
+}
+
+.flash-close:hover {
+  color: var(--text-main);
+}
+
+/* ================= Header & Navbar ================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1.5px solid var(--border-subtle);
+  transition: var(--transition-normal);
+}
+
+.nav-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: var(--derma-navy);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  transition: var(--transition-fast);
+}
+
+.brand-logo:hover {
+  opacity: 0.9;
+}
+
+.logo-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 141, 218, 0.25);
+  margin-left: 0.2rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-full);
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-link:hover {
+  color: var(--derma-navy);
+  background: var(--bg-subtle);
+}
+
+.nav-link.active {
+  color: var(--derma-cyan);
+  background: var(--derma-cyan-soft);
+  font-weight: 700;
+}
+
+.nav-cta {
+  background: var(--derma-navy);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(11, 25, 44, 0.18);
+  margin-left: 0.35rem;
+}
+
+.nav-cta:hover {
+  background: var(--derma-cyan) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ================= Main Content Layout ================= */
+.main-content {
+  flex: 1;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* Clinical Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.page-header .tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--derma-cyan);
+  background: var(--derma-cyan-soft);
+  border: 1px solid rgba(0, 141, 218, 0.2);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.75rem;
+}
+
+.page-header h1 {
+  font-size: 2.45rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* ================= Cards & Containers ================= */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #CBD5E1;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--derma-navy);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ================= Forms & Inputs ================= */
+.form-group {
+  margin-bottom: 1.35rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+  margin-bottom: 0.45rem;
+  letter-spacing: 0.01em;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-subtle);
+  background: #FFFFFF;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: var(--transition-fast);
+  outline: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--derma-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 141, 218, 0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 95px;
+}
+
+/* ================= Buttons ================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition-normal);
+}
+
+.btn-primary {
+  background: var(--derma-navy);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(11, 25, 44, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--derma-cyan) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-accent {
+  background: var(--derma-cyan);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 141, 218, 0.28);
+}
+
+.btn-accent:hover {
+  background: var(--derma-cyan-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-secondary {
+  background: var(--bg-subtle);
+  color: var(--derma-navy);
+  border: 1.5px solid var(--border-subtle);
+}
+
+.btn-secondary:hover {
+  background: #E2E8F0;
+  color: var(--derma-navy);
+}
+
+.btn-danger {
+  background: #FEE2E2;
+  color: #DC2626;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-danger:hover {
+  background: #FCA5A5;
+  color: #991B1B;
+  transform: scale(1.02);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ================= Badges & Pills ================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.badge-sage {
+  background: var(--derma-teal-soft);
+  color: var(--derma-teal);
+}
+
+.badge-rose {
+  background: var(--derma-coral-soft);
+  color: var(--derma-coral);
+}
+
+.badge-gold {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.badge-time {
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  font-weight: 800;
+}
+
+/* ================= Derma Co Hero Section ================= */
+.hero-section {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+  margin-bottom: 3.5rem;
+  padding: 2.75rem;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 50%, #E0F2FE 100%);
+  border-radius: var(--radius-xl);
+  border: 1.5px solid #BAE6FD;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(0, 141, 218, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  line-height: 1.15;
+  margin-bottom: 1.2rem;
+  color: var(--derma-navy);
+}
+
+.hero-content p {
+  font-size: 1.08rem;
+  color: var(--text-muted);
+  margin-bottom: 1.8rem;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid rgba(186, 230, 253, 0.6);
+}
+
+.stat-item .stat-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--derma-cyan);
+}
+
+.stat-item .stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+/* Hero Diagnostic Quiz Box */
+.diagnostic-box {
+  background: #FFFFFF;
+  padding: 2.2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid #BAE6FD;
+  position: relative;
+}
+
+.diagnostic-box::before {
+  content: "🧪 AI SKIN ASSESSMENT";
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: var(--derma-cyan);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.85rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(0, 141, 218, 0.35);
+}
+
+.profile-hero-prompt {
+  background: var(--derma-cyan-soft);
+  border: 1px solid rgba(0, 141, 218, 0.25);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ================= 4 Clinical Pillars (The Derma Standard) ================= */
+.clinical-pillars-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.pillar-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.pillar-card:hover {
+  border-color: var(--derma-cyan);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.pillar-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.pillar-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+}
+
+.pillar-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ================= Shop By Concern (Derma Co Style) ================= */
+.concern-grid-section {
+  margin-bottom: 3.5rem;
+}
+
+.concern-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.concern-visual-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  transition: var(--transition-fast);
+}
+
+.concern-visual-card:hover {
+  border-color: var(--derma-cyan);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  background: var(--derma-cyan-soft);
+}
+
+.concern-visual-icon {
+  font-size: 2.2rem;
+}
+
+.concern-visual-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+}
+
+.concern-visual-actives {
+  font-size: 0.75rem;
+  color: var(--derma-cyan);
+  font-weight: 600;
+}
+
+/* ================= Shop By Active Ingredient (Horizontal Pills) ================= */
+.ingredient-scroll-row {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.ingredient-btn-pill {
+  padding: 0.55rem 1.15rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ingredient-btn-pill:hover, .ingredient-btn-pill.active {
+  background: var(--derma-navy);
+  color: #FFFFFF;
+  border-color: var(--derma-navy);
+}
+
+/* ================= Feature Grid ================= */
+.feature-card {
+  text-decoration: none;
+  color: inherit;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-normal);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--derma-cyan);
+}
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.feature-card p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* ================= Stat Banner / Metrics ================= */
+.stat-banner {
+  background: linear-gradient(135deg, var(--derma-navy) 0%, var(--derma-navy-light) 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 1.8rem 2.2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-banner h2 {
+  color: #FFFFFF;
+  font-size: 1.6rem;
+}
+
+.stat-banner-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #38BDF8;
+}
+
+/* ================= Category Investment Breakdown ================= */
+.category-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.cat-stat-card {
+  background: var(--bg-body);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: var(--transition-fast);
+}
+
+.cat-stat-card:hover {
+  border-color: var(--derma-cyan);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.cat-stat-name {
+  font-weight: 700;
+  color: var(--derma-navy);
+}
+
+.cat-stat-val {
+  font-weight: 800;
+  color: var(--derma-cyan);
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: #E2E8F0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--derma-cyan) 0%, var(--derma-teal) 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ================= Quick Catalog Picker (Expenses) ================= */
+.quick-catalog-list {
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-right: 0.4rem;
+}
+
+.quick-prod-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.quick-prod-item:hover {
+  border-color: var(--derma-cyan);
+  background: var(--derma-cyan-soft);
+  transform: translateX(3px);
+}
+
+.quick-prod-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.quick-prod-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.quick-prod-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick-prod-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.quick-prod-price-action {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.quick-prod-price {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--derma-navy);
+  display: block;
+}
+
+.quick-add-btn {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--derma-cyan);
+  background: #FFFFFF;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 141, 218, 0.4);
+  margin-top: 0.2rem;
+}
+
+/* ================= Expense History Feed ================= */
+.expense-history-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.expense-item-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: var(--transition-fast);
+}
+
+.expense-item-card:hover {
+  border-color: var(--derma-cyan);
+  box-shadow: var(--shadow-sm);
+}
+
+.expense-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.expense-item-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.expense-item-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* ================= Curated Derma Co Shelf & Dispensary ================= */
+.shelf-controls-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.shelf-search-row {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.shelf-search-input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.75rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--bg-body);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.shelf-search-input:focus {
+  background: #FFFFFF;
+  border-color: var(--derma-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 141, 218, 0.15);
+}
+
+.filter-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.filter-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+  white-space: nowrap;
+}
+
+.shelf-filter-select {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--bg-body);
+  outline: none;
+  cursor: pointer;
+}
+
+.shelf-filter-select:focus {
+  border-color: var(--derma-cyan);
+}
+
+.category-pills-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  background: var(--bg-body);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+
+.cat-pill:hover {
+  background: #FFFFFF;
+  border-color: var(--derma-cyan);
+  color: var(--derma-cyan);
+}
+
+.cat-pill.active {
+  background: var(--derma-navy);
+  color: #FFFFFF;
+  border-color: var(--derma-navy);
+}
+
+.pill-count {
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+
+.cat-pill.active .pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.shelf-results-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.shelf-badge-tag {
+  background: var(--derma-teal-soft);
+  color: var(--derma-teal);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.85rem;
+  border-radius: var(--radius-full);
+}
+
+/* 30 Derma Co Products Shelf Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+.product-shelf-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  position: relative;
+}
+
+.product-shelf-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--derma-cyan);
+}
+
+.product-shelf-img-wrapper {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background: #F1F5F9;
+}
+
+.product-shelf-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-shelf-card:hover .product-shelf-img {
+  transform: scale(1.06);
+}
+
+.card-floating-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.badge-cat-tag {
+  background: rgba(11, 25, 44, 0.92);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+}
+
+.badge-rating-tag {
+  background: rgba(245, 158, 11, 0.95);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+}
+
+.badge-stock-tag {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--derma-teal);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(2, 128, 144, 0.2);
+}
+
+.product-shelf-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-brand-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.product-brand-name {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--derma-cyan);
+}
+
+.product-skin-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-body);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+.product-shelf-title {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--derma-navy);
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+}
+
+.product-shelf-desc {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.product-concern-row {
+  margin-bottom: 1.25rem;
+}
+
+.concern-pill {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.product-shelf-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.price-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.product-shelf-price {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--derma-navy);
+}
+
+.product-action-btns {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-shelf-buy {
+  background: var(--derma-cyan);
+  color: #FFFFFF !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(0, 141, 218, 0.25);
+}
+
+.btn-shelf-buy:hover {
+  background: var(--derma-cyan-hover) !important;
+  transform: translateY(-1px);
+}
+
+.btn-shelf-routine {
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan) !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(0, 141, 218, 0.25);
+}
+
+.btn-shelf-routine:hover {
+  background: var(--derma-navy);
+  color: #FFFFFF !important;
+  border-color: var(--derma-navy);
+  transform: translateY(-1px);
+}
+
+/* Shelf Bottom Banner */
+.shelf-bottom-banner {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--derma-cyan-soft) 100%);
+  border: 1.5px solid #BAE6FD;
+  border-radius: var(--radius-lg);
+  padding: 2.2rem 2.5rem;
+  margin-top: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 650px;
+}
+
+.banner-icon {
+  font-size: 2.6rem;
+}
+
+/* ================= Routine Grouping & Tabs ================= */
+.routine-tabs-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.routine-tab-btn {
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  background: #FFFFFF;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.routine-tab-btn:hover {
+  border-color: var(--derma-cyan);
+  color: var(--derma-cyan);
+}
+
+.routine-tab-btn.active {
+  background: var(--derma-navy);
+  color: #FFFFFF;
+  border-color: var(--derma-navy);
+}
+
+/* ================= Result Specific Styles ================= */
+.recommendation-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.recommendation-item {
+  background: var(--bg-body);
+  border-left: 4px solid var(--derma-cyan);
+  padding: 1rem 1.25rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ingredient-chip {
+  background: var(--derma-cyan-soft);
+  color: var(--derma-cyan);
+  font-weight: 700;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(0, 141, 218, 0.2);
+  transition: var(--transition-fast);
+}
+
+.ingredient-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 141, 218, 0.25);
+  background: #FFFFFF;
+}
+
+/* ================= Empty States ================= */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-muted);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 0.8rem;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.4rem;
+  color: var(--derma-navy);
+}
+
+.empty-state p {
+  font-size: 0.92rem;
+  max-width: 420px;
+  margin: 0 auto 1.2rem;
+}
+
+/* ================= Footer ================= */
+.site-footer {
+  margin-top: auto;
+  border-top: 1.5px solid var(--border-subtle);
+  background: var(--derma-navy);
+  color: #94A3B8;
+  padding: 3.5rem 1.5rem 2.5rem;
+  font-size: 0.88rem;
+}
+
+.footer-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.footer-brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  color: #FFFFFF;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-heading {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.footer-links-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer-links-list a {
+  color: #94A3B8;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.footer-links-list a:hover {
+  color: #38BDF8;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  text-align: center;
+  color: #64748B;
+  font-size: 0.82rem;
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 960px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    padding: 1.75rem;
+    gap: 2rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.3rem;
+  }
+  
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+  }
+  
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

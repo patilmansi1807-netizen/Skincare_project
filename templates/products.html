@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | 30 Curated Formulations • Potent Actives Shelf{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <span class="tagline">🧪 Dermatologist Formulated • 30 Actives</span>
+  <h1>Curated Skincare Shelf & Dispensary</h1>
+  <p>Explore 30 clinically formulated cleansers, potent active serums, barrier repair creams, and broad-spectrum SPF defense.</p>
+</div>
+
+<!-- Shop by Active Ingredient Quick Scroll -->
+<div class="ingredient-scroll-row" id="ingredientRow">
+  <button class="ingredient-btn-pill active" onclick="filterByActive('all', this)">✨ All Actives</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Niacinamide', this)">🧪 Niacinamide</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Salicylic', this)">🫧 Salicylic Acid (BHA)</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Vitamin C', this)">🍊 Vitamin C</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Hyaluronic', this)">💧 Hyaluronic Acid</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Retinol', this)">⏳ Retinol / Retinal</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Ceramide', this)">🛡️ Ceramides</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Azelaic', this)">🌸 Azelaic Acid</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Sunscreen', this)">☀️ SPF 50+</button>
+  <button class="ingredient-btn-pill" onclick="filterByActive('Peptide', this)">🧬 Multi-Peptides</button>
+</div>
+
+<!-- Shelf Controls: Search, Category Filters, Skin Type -->
+<div class="shelf-controls-card">
+  <div class="shelf-search-row">
+    <div class="search-input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="productSearch" class="shelf-search-input" placeholder="Search by product name, active percentage, ingredient (e.g. 10% Niacinamide, Retinol, Ceramide)..." onkeyup="filterProducts()">
+    </div>
+
+    <div class="filter-dropdown-wrapper">
+      <label for="skinTypeFilter" class="filter-label">Target Skin:</label>
+      <select id="skinTypeFilter" class="shelf-filter-select" onchange="filterProducts()">
+        <option value="all">✨ All Skin Types</option>
+        <option value="Oily">🫧 Oily / Acne-Prone</option>
+        <option value="Dry">🌵 Dry / Dehydrated</option>
+        <option value="Sensitive">🌸 Sensitive / Reactive</option>
+        <option value="Aging">⏳ Aging / Mature</option>
+        <option value="Normal">🌿 Normal / Dull</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="category-pills-row" id="categoryPills">
+    <button class="cat-pill active" onclick="setCategory('all', this)">
+      All Formulations <span class="pill-count">30</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Cleanser', this)">
+      🫧 Cleansers <span class="pill-count">4</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Toner', this)">
+      💧 Toners <span class="pill-count">3</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Serum', this)">
+      🧪 Serums & Actives <span class="pill-count">9</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Moisturizer', this)">
+      🧴 Moisturizers <span class="pill-count">5</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Sunscreen', this)">
+      ☀️ Sunscreens (SPF) <span class="pill-count">3</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Treatment', this)">
+      ✨ Exfoliants & Peels <span class="pill-count">3</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Eye Care', this)">
+      👁️ Eye Care <span class="pill-count">2</span>
+    </button>
+    <button class="cat-pill" onclick="setCategory('Face Mask', this)">
+      🌸 Face Masks <span class="pill-count">1</span>
+    </button>
+  </div>
+</div>
+
+<!-- Product Count Bar -->
+<div class="shelf-results-meta">
+  <span>Showing <strong id="visibleCount">{{ products|length }}</strong> of 30 clinical formulations</span>
+  <span class="shelf-badge-tag">🚚 Free Fast Dermatological Delivery</span>
+</div>
+
+<!-- 30 Products Grid (Derma Co Style) -->
+<div class="products-grid" id="productsContainer">
+  {% for product in products %}
+    <div class="product-shelf-card" 
+         data-name="{{ product.name | lower }}" 
+         data-brand="{{ product.brand | lower }}" 
+         data-category="{{ product.category }}" 
+         data-skintype="{{ product.skin_type | default('All') }}"
+         data-desc="{{ product.desc | lower }}">
+      
+      <!-- Image Wrapper with Badges -->
+      <div class="product-shelf-img-wrapper">
+        <img src="{{ product.image }}" 
+             alt="{{ product.name }}" 
+             class="product-shelf-img" 
+             loading="lazy"
+             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80';">
+        
+        <div class="card-floating-badges">
+          <span class="badge-cat-tag">{{ product.category }}</span>
+          {% if product.rating %}
+            <span class="badge-rating-tag">★ {{ product.rating }}</span>
+          {% endif %}
+        </div>
+
+        <span class="badge-stock-tag">In Stock ({{ product.stock }})</span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="product-shelf-body">
+        <div class="product-brand-line">
+          <span class="product-brand-name">{{ product.brand }}</span>
+          <span class="product-skin-tag">{{ product.skin_type | default('All Skin Types') }}</span>
+        </div>
+
+        <h3 class="product-shelf-title">{{ product.name }}</h3>
+        
+        <p class="product-shelf-desc">
+          {{ product.desc or product.description }}
+        </p>
+
+        <div class="product-concern-row">
+          <span class="concern-pill">🎯 {{ product.concern | default('Glow & Barrier') }}</span>
+        </div>
+
+        <!-- Pricing & Action Buttons -->
+        <div class="product-shelf-footer">
+          <div class="price-stack">
+            <span class="price-label">Price</span>
+            <div style="display: flex; align-items: baseline; gap: 0.4rem;">
+              <span class="product-shelf-price">₹{{ "%.2f"|format(product.price) }}</span>
+              <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.8rem;">₹{{ "%.2f"|format(product.price * 1.2) }}</span>
+            </div>
+          </div>
+
+          <div class="product-action-btns">
+            <!-- 1-Click Buy & Log Expense -->
+            <a href="{{ url_for('buy_product', id=product.id) }}" 
+               class="btn-shelf-buy" 
+               title="Purchase and log directly into Skincare Expenses Tracker">
+              <span>⚡ Buy & Log</span>
+            </a>
+
+            <!-- Quick Add to AM/PM Routine -->
+            <a href="{{ url_for('quick_add_routine', id=product.id) }}" 
+               class="btn-shelf-routine" 
+               title="Add to daily routine steps">
+              <span>🧴 + Routine</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Empty Results Message (Hidden by default) -->
+<div id="noResults" class="card empty-state" style="display: none; margin-top: 2rem;">
+  <div class="empty-state-icon">🔍</div>
+  <h3>No Formulations Found</h3>
+  <p>Try searching for a different active ingredient, brand, or resetting the category filter.</p>
+  <button class="btn btn-secondary" onclick="resetFilters()">Reset All Filters</button>
+</div>
+
+<!-- Bottom CTA / Quick Expense Navigation -->
+<div class="shelf-bottom-banner">
+  <div class="banner-content">
+    <div class="banner-icon">📊</div>
+    <div>
+      <h3 style="color: var(--derma-navy); margin-bottom: 0.25rem;">Managing Your Skincare Budget?</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Track all your product investments, view category breakdowns, and log custom beauty purchases.
+      </p>
+    </div>
+  </div>
+  <a href="{{ url_for('expenses') }}" class="btn btn-primary">Open Investment Tracker →</a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let selectedCategory = 'all';
+  let activeIngredientFilter = 'all';
+
+  function setCategory(cat, btn) {
+    selectedCategory = cat;
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    filterProducts();
+  }
+
+  function filterByActive(act, btn) {
+    activeIngredientFilter = act;
+    document.querySelectorAll('.ingredient-btn-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    filterProducts();
+  }
+
+  function filterProducts() {
+    const searchVal = (document.getElementById('productSearch').value || '').trim().toLowerCase();
+    const skinVal = document.getElementById('skinTypeFilter').value;
+    const cards = document.querySelectorAll('.product-shelf-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const name = card.getAttribute('data-name') || '';
+      const brand = card.getAttribute('data-brand') || '';
+      const category = card.getAttribute('data-category') || '';
+      const skinType = card.getAttribute('data-skintype') || '';
+      const desc = card.getAttribute('data-desc') || '';
+
+      const matchSearch = !searchVal || 
+        name.includes(searchVal) || 
+        brand.includes(searchVal) || 
+        category.toLowerCase().includes(searchVal) || 
+        desc.includes(searchVal);
+
+      const matchCategory = (selectedCategory === 'all') || (category.toLowerCase() === selectedCategory.toLowerCase());
+
+      const matchSkin = (skinVal === 'all') || skinType.toLowerCase().includes(skinVal.toLowerCase()) || skinType.includes('All');
+
+      const matchActive = (activeIngredientFilter === 'all') || 
+        name.toLowerCase().includes(activeIngredientFilter.toLowerCase()) || 
+        desc.toLowerCase().includes(activeIngredientFilter.toLowerCase()) ||
+        category.toLowerCase().includes(activeIngredientFilter.toLowerCase());
+
+      if (matchSearch && matchCategory && matchSkin && matchActive) {
+        card.style.display = 'flex';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    document.getElementById('visibleCount').textContent = visibleCount;
+    document.getElementById('noResults').style.display = (visibleCount === 0) ? 'block' : 'none';
+  }
+
+  function resetFilters() {
+    document.getElementById('productSearch').value = '';
+    document.getElementById('skinTypeFilter').value = 'all';
+    selectedCategory = 'all';
+    activeIngredientFilter = 'all';
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('.cat-pill').classList.add('active');
+    document.querySelectorAll('.ingredient-btn-pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('.ingredient-btn-pill').classList.add('active');
+    filterProducts();
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Skincare Investment & Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">💳 Financial Wellness & Product Logging</span>
+  <h1>Skincare Investment & Budget Tracker</h1>
+  <p>Track your skincare purchases, monitor category spending, and quickly log formulations from the 30-item dispensary.</p>
+</div>
+
+<!-- Total Investment & Analytics Banner -->
+<div class="stat-banner">
+  <div>
+    <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85; display: block; margin-bottom: 0.2rem;">Total Skincare Investment</span>
+    <div class="stat-banner-num">₹{{ "%.2f"|format(total) }}</div>
+  </div>
+  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+    <span class="badge" style="background: rgba(255,255,255,0.18); color: #fff; font-size: 0.9rem; padding: 0.5rem 1.1rem;">
+      📦 {{ expenses|length }} Purchases Logged
+    </span>
+    <a href="{{ url_for('products') }}" class="badge" style="background: var(--derma-cyan); color: #fff; font-size: 0.9rem; padding: 0.5rem 1.1rem; text-decoration: none;">
+      🛍️ Browse 30 Dispensary Products →
+    </a>
+  </div>
+</div>
+
+<!-- Category Investment Breakdown (if expenses exist) -->
+{% if category_totals and total > 0 %}
+<div class="card" style="margin-bottom: 2rem; padding: 1.75rem 2rem;">
+  <h3 class="card-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+    <span>📊</span> Spending Breakdown by Category
+  </h3>
+  <div class="category-breakdown-grid">
+    {% for cat, cat_amt in category_totals.items() %}
+      {% set pct = (cat_amt / total * 100) if total > 0 else 0 %}
+      <div class="cat-stat-card">
+        <div class="cat-stat-header">
+          <span class="cat-stat-name">{{ cat }}</span>
+          <span class="cat-stat-val">₹{{ "%.2f"|format(cat_amt) }} ({{ "%.0f"|format(pct) }}%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: {{ pct }}%;"></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="grid-2">
+  <!-- Left Column: Quick Catalog Picker & Custom Form -->
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    
+    <!-- Quick Select from Curated 30 Products -->
+    <div class="card">
+      <h3 class="card-title">
+        <span>⚡</span> Quick Log from 30 Catalog Products
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+        Click any product below to automatically pre-fill and record its purchase into your skincare budget:
+      </p>
+
+      <div class="quick-picker-search">
+        <input type="text" id="quickPickerSearch" placeholder="🔍 Search by active, product, brand..." onkeyup="filterQuickPicker()" class="form-input" style="padding: 0.65rem 1rem; font-size: 0.9rem; margin-bottom: 0.9rem;">
+      </div>
+
+      <div class="quick-catalog-list" id="quickCatalogList">
+        {% for prod in catalog_products %}
+          <div class="quick-prod-item" 
+               data-name="{{ prod.name | lower }}" 
+               data-brand="{{ prod.brand | lower }}"
+               data-category="{{ prod.category | lower }}"
+               onclick="selectProductToForm('{{ prod.name | escape }}', '{{ prod.price }}', '{{ prod.category | escape }}', '{{ prod.image }}')">
+            <img src="{{ prod.image }}" alt="{{ prod.name }}" class="quick-prod-thumb" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80';">
+            <div class="quick-prod-info">
+              <strong class="quick-prod-name">{{ prod.name }}</strong>
+              <div class="quick-prod-sub">
+                <span class="badge badge-sage" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">{{ prod.category }}</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">{{ prod.brand }}</span>
+              </div>
+            </div>
+            <div class="quick-prod-price-action">
+              <span class="quick-prod-price">₹{{ "%.2f"|format(prod.price) }}</span>
+              <span class="quick-add-btn">+ Log</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Manual Log Form -->
+    <div class="card">
+      <h3 class="card-title">
+        <span>➕</span> Log Custom Purchase
+      </h3>
+
+      <form action="{{ url_for('expenses') }}" method="POST" id="expenseForm">
+        <input type="hidden" id="form_image" name="image" value="">
+
+        <div class="form-group">
+          <label class="form-label" for="form_product">Product / Treatment Name</label>
+          <input type="text" id="form_product" name="product" class="form-input" placeholder="e.g. 10% Niacinamide Serum" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form_category">Category</label>
+          <select id="form_category" name="category" class="form-select">
+            <option value="Cleanser">🫧 Cleanser</option>
+            <option value="Toner">💧 Toner</option>
+            <option value="Serum" selected>🧪 Serum & Actives</option>
+            <option value="Moisturizer">🧴 Moisturizer</option>
+            <option value="Sunscreen">☀️ Sunscreen (SPF)</option>
+            <option value="Treatment">✨ Exfoliant / Treatment</option>
+            <option value="Eye Care">👁️ Eye Care</option>
+            <option value="Face Mask">🌸 Face Mask</option>
+            <option value="Clinical Treatment">🩺 Dermatologist / Facial</option>
+            <option value="Other">🌿 Other Skincare</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form_amount">Amount Paid (₹)</label>
+          <input type="number" step="0.01" id="form_amount" name="amount" class="form-input" placeholder="e.g. 699.00" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Log Skincare Expense 💳</button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Right Column: Purchase History List -->
+  <div>
+    <h3 style="font-size: 1.35rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; color: var(--derma-navy);">
+      <span>Purchase History</span>
+      <span class="badge badge-sage">{{ expenses|length }} Transactions</span>
+    </h3>
+
+    {% if expenses %}
+      <div class="expense-history-feed">
+        {% for item in expenses %}
+          <div class="expense-item-card">
+            <div class="expense-item-left">
+              {% if item.image %}
+                <img src="{{ item.image }}" alt="{{ item.product }}" class="expense-item-thumb" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80';">
+              {% else %}
+                <div class="expense-item-avatar">🧴</div>
+              {% endif %}
+
+              <div class="item-content">
+                <strong style="font-size: 1.05rem; display: block; margin-bottom: 0.2rem; color: var(--text-main);">
+                  {{ item.product }}
+                </strong>
+                <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                  <span class="badge badge-rose" style="font-size: 0.75rem; padding: 0.15rem 0.55rem;">
+                    {{ item.category or 'Skincare' }}
+                  </span>
+                  <span style="font-size: 0.82rem; color: var(--text-muted);">📅 {{ item.date }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="font-size: 1.25rem; font-weight: 800; color: var(--derma-navy);">
+                ₹{{ "%.2f"|format(item.amount) }}
+              </span>
+              <a href="{{ url_for('delete_expense', id=item.id) }}" 
+                 class="btn-danger" 
+                 onclick="return confirm('Delete this expense record?');" 
+                 title="Delete Entry">
+                ✕
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card empty-state">
+        <div class="empty-state-icon">💳</div>
+        <h3>No Expenses Recorded Yet</h3>
+        <p>Start tracking your active skincare investments by picking from the 30-product catalog on the left or adding custom orders.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function selectProductToForm(name, price, category, image) {
+    document.getElementById('form_product').value = name;
+    document.getElementById('form_amount').value = price;
+    document.getElementById('form_image').value = image || '';
+    
+    // Select matching category if exists
+    const catSelect = document.getElementById('form_category');
+    for (let i = 0; i < catSelect.options.length; i++) {
+      if (catSelect.options[i].value.toLowerCase() === category.toLowerCase()) {
+        catSelect.selectedIndex = i;
+        break;
+      }
+    }
+
+    // Scroll smoothly to form and highlight
+    const form = document.getElementById('expenseForm');
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('form_amount').focus();
+  }
+
+  function filterQuickPicker() {
+    const q = (document.getElementById('quickPickerSearch').value || '').trim().toLowerCase();
+    const items = document.querySelectorAll('.quick-prod-item');
+    items.forEach(item => {
+      const name = item.getAttribute('data-name') || '';
+      const brand = item.getAttribute('data-brand') || '';
+      const category = item.getAttribute('data-category') || '';
+      if (!q || name.includes(q) || brand.includes(q) || category.includes(q)) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+</script>
+{% endblock %}

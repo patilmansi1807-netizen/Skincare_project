@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Clinical Assessment Report & Regimen{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">🧪 Dermatological Assessment</span>
+  <h1>Your Personalized Active Skin Protocol</h1>
+  <p>Scientifically formulated based on your clinical skin parameters and primary target concern.</p>
+</div>
+
+<!-- Profile Diagnostic Summary Banner -->
+<div class="stat-banner">
+  <div>
+    <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85; display: block; margin-bottom: 0.2rem;">Clinical Skin Parameters</span>
+    <h2>{{ skin_type }} Skin &bull; {{ concern }}</h2>
+  </div>
+  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+    <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff; font-size: 0.9rem; padding: 0.45rem 1rem;">
+      Skin Type: {{ skin_type }}
+    </span>
+    <span class="badge" style="background: var(--derma-cyan); color: #fff; font-size: 0.9rem; padding: 0.45rem 1rem;">
+      Primary Target: {{ concern }}
+    </span>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-bottom: 2.5rem;">
+  <!-- Recommendations Card -->
+  <div class="card">
+    <h3 class="card-title">
+      <span>🩺</span> Dermatologist Clinical Guidance
+    </h3>
+    <ul class="recommendation-list">
+      {% for rec in recommendations %}
+        <li class="recommendation-item">
+          {{ rec }}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Key Active Ingredients & Lifestyle -->
+  <div class="card">
+    <h3 class="card-title">
+      <span>🔬</span> Prescribed Active Concentrations
+    </h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem;">
+      These active ingredients are clinically proven at optimal percentages to treat {{ concern | lower }} on {{ skin_type | lower }} skin:
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.8rem;">
+      {% if skin_type == 'Oily' or concern == 'Acne' %}
+        <span class="ingredient-chip">🧪 10% Niacinamide + 1% Zinc PCA</span>
+        <span class="ingredient-chip">🫧 2% Salicylic Acid (BHA)</span>
+        <span class="ingredient-chip">🌸 10% Azelaic Acid</span>
+        <span class="ingredient-chip">🌿 Centella Asiatica</span>
+      {% elif skin_type == 'Dry' or concern == 'Dryness' %}
+        <span class="ingredient-chip">💧 2% Hyaluronic Acid + B5</span>
+        <span class="ingredient-chip">🛡️ 5-Ceramide Complex (NP/EOP)</span>
+        <span class="ingredient-chip">🥑 100% Plant Squalane</span>
+        <span class="ingredient-chip">🌾 Panthenol (Pro-Vitamin B5)</span>
+      {% elif concern == 'Pigmentation' %}
+        <span class="ingredient-chip">🍊 15% Vitamin C + Ferulic</span>
+        <span class="ingredient-chip">✨ 2% Alpha Arbutin</span>
+        <span class="ingredient-chip">🌸 3% Tranexamic Acid</span>
+        <span class="ingredient-chip">☀️ SPF 50+ PA++++ Broad Spectrum</span>
+      {% elif concern == 'Aging' %}
+        <span class="ingredient-chip">⏳ 0.3% Pure Encapsulated Retinol</span>
+        <span class="ingredient-chip">🧬 Multi-Peptide Complex</span>
+        <span class="ingredient-chip">🍇 Resveratrol + Ferulic</span>
+        <span class="ingredient-chip">🛡️ Antioxidant Lipid Barrier</span>
+      {% else %}
+        <span class="ingredient-chip">🌾 Essential Ceramides</span>
+        <span class="ingredient-chip">💧 Multi-Depth Hyaluronic Acid</span>
+        <span class="ingredient-chip">🌿 Pure Centella Asiatica</span>
+        <span class="ingredient-chip">☀️ Broad Spectrum SPF 50+</span>
+      {% endif %}
+    </div>
+
+    <h4 style="font-size: 1.05rem; margin-bottom: 0.6rem; color: var(--derma-navy);">💡 GlowCare Golden Rules:</h4>
+    <ul style="padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+      <li>Always patch-test new active serums on your inner forearm 24 hours prior.</li>
+      <li>Apply 2 finger-lengths of broad-spectrum SPF 50+ every morning, 365 days a year.</li>
+      <li>Never layer direct strong exfoliants (AHA/BHA) with Retinol in the same evening ritual.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Curated Products Matched for Skin Type & Concern -->
+{% if matched_products %}
+<div style="margin-bottom: 2.5rem;">
+  <div class="page-header" style="text-align: left; margin-bottom: 1.5rem;">
+    <span class="tagline">🛍️ Matched Formulations</span>
+    <h2 style="font-size: 1.85rem; margin-bottom: 0.35rem;">Curated Products for Your Skin Protocol</h2>
+    <p style="margin: 0; max-width: none;">Directly add these dermatologist-curated solutions to your AM/PM routine or investment tracker:</p>
+  </div>
+
+  <div class="products-grid">
+    {% for product in matched_products %}
+      <div class="product-shelf-card">
+        <div class="product-shelf-img-wrapper">
+          <img src="{{ product.image }}" alt="{{ product.name }}" class="product-shelf-img" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80';">
+          <div class="card-floating-badges">
+            <span class="badge-cat-tag">{{ product.category }}</span>
+            <span class="badge-rating-tag">★ {{ product.rating }}</span>
+          </div>
+          <span class="badge-stock-tag">In Stock</span>
+        </div>
+
+        <div class="product-shelf-body">
+          <div class="product-brand-line">
+            <span class="product-brand-name">{{ product.brand }}</span>
+            <span class="product-skin-tag">{{ product.skin_type }}</span>
+          </div>
+
+          <h3 class="product-shelf-title">{{ product.name }}</h3>
+          <p class="product-shelf-desc">{{ product.description }}</p>
+
+          <div class="product-concern-row">
+            <span class="concern-pill">🎯 {{ product.concern }}</span>
+          </div>
+
+          <div class="product-shelf-footer">
+            <div class="price-stack">
+              <span class="price-label">Price</span>
+              <div style="display: flex; align-items: baseline; gap: 0.4rem;">
+                <span class="product-shelf-price">₹{{ "%.2f"|format(product.price) }}</span>
+                <span style="text-decoration: line-through; color: #94A3B8; font-size: 0.8rem;">₹{{ "%.2f"|format(product.price * 1.2) }}</span>
+              </div>
+            </div>
+
+            <div class="product-action-btns">
+              <a href="{{ url_for('buy_product', id=product.id) }}" class="btn-shelf-buy" title="Buy and record into expenses">
+                <span>⚡ Buy & Log</span>
+              </a>
+              <a href="{{ url_for('quick_add_routine', id=product.id) }}" class="btn-shelf-routine" title="Add to routine">
+                <span>🧴 + Routine</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Routine & Action Center -->
+<div class="card" style="text-align: center; padding: 2.5rem 2rem;">
+  <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--derma-navy);">Ready to build your clinical daily regimen?</h3>
+  <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem;">
+    Save these recommendations into your personalized AM/PM routine or set daily application alarms.
+  </p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="{{ url_for('routine') }}" class="btn btn-primary">Go to Regimen Builder →</a>
+    <a href="{{ url_for('products') }}" class="btn btn-secondary">Browse All 30 Formulations</a>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary">← Retake Skin Assessment</a>
+  </div>
+</div>
+{% endblock %}

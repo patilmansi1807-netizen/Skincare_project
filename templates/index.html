@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Designed by Dermatologists • Science-Backed Skincare{% endblock %}
+
+{% block content %}
+<!-- Hero Section (The Derma Co Clinical Style) -->
+<section class="hero-section">
+  <div class="hero-content">
+    <span class="tagline">🧪 Designed by Dermatologists</span>
+    <h1>Skincare Powered by Potent Actives. Real Results.</h1>
+    <p>
+      Scientifically formulated with clinically proven active concentrations of Niacinamide, Salicylic Acid, Vitamin C, Retinol, and Hyaluronic Acid to treat your exact skin concerns.
+    </p>
+
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="#analyzer" class="btn btn-accent">Start Free Skin Assessment ↓</a>
+      <a href="{{ url_for('products') }}" class="btn btn-secondary">Explore 30 Formulations</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Clinical Formulations</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Active Transparency</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0%</div>
+        <div class="stat-label">Fragrance & Toxins</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Skin Diagnostic Box -->
+  <div class="diagnostic-box" id="analyzer">
+    <h2 style="font-size: 1.5rem; margin-bottom: 0.4rem; color: var(--derma-navy);">AI Skin Assessment</h2>
+    <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+      Answer 2 quick diagnostic questions to get your dermatologist-backed active regimen.
+    </p>
+
+    {% if profile %}
+      <div class="profile-hero-prompt">
+        <div style="font-size: 0.86rem;">
+          <strong>🌸 Welcome back, {{ profile.name }}!</strong>
+          <div style="color: var(--text-muted); font-size: 0.8rem;">Profile: {{ profile.skin_type }} &bull; {{ profile.concern }}</div>
+        </div>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="applyProfile('{{ profile.skin_type }}', '{{ profile.concern }}')">
+          ⚡ Use Saved Skin ID
+        </button>
+      </div>
+    {% endif %}
+
+    <form action="{{ url_for('analyze') }}" method="POST" id="diagForm">
+      <div class="form-group">
+        <label class="form-label" for="skin_type">1. What is your skin type?</label>
+        <select name="skin_type" id="skin_type" class="form-select" required>
+          <option value="" disabled {% if not profile %}selected{% endif %}>Select Skin Type</option>
+          <option value="Oily" {% if profile and profile.skin_type == 'Oily' %}selected{% endif %}>🫧 Oily (Excess shine, enlarged pores)</option>
+          <option value="Dry" {% if profile and profile.skin_type == 'Dry' %}selected{% endif %}>🌵 Dry (Tight feeling, flaky patches)</option>
+          <option value="Combination" {% if profile and profile.skin_type == 'Combination' %}selected{% endif %}>⚖️ Combination (Oily T-zone, normal cheeks)</option>
+          <option value="Sensitive" {% if profile and profile.skin_type == 'Sensitive' %}selected{% endif %}>🌸 Sensitive (Easily reactive, prone to redness)</option>
+          <option value="Normal" {% if profile and profile.skin_type == 'Normal' %}selected{% endif %}>✨ Normal (Balanced hydration mantle)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="concern">2. Primary Skin Concern</label>
+        <select name="concern" id="concern" class="form-select" required>
+          <option value="" disabled {% if not profile %}selected{% endif %}>Select Primary Concern</option>
+          <option value="Acne" {% if profile and profile.concern == 'Acne' %}selected{% endif %}>🔴 Active Acne & Breakouts</option>
+          <option value="Dryness" {% if profile and profile.concern == 'Dryness' %}selected{% endif %}>💧 Dehydration & Compromised Barrier</option>
+          <option value="Pigmentation" {% if profile and profile.concern == 'Pigmentation' %}selected{% endif %}>☀️ Dark Spots & Hyperpigmentation</option>
+          <option value="Dark Circles" {% if profile and profile.concern == 'Dark Circles' %}selected{% endif %}>👁️ Under-Eye Bags & Dark Rings</option>
+          <option value="Aging" {% if profile and profile.concern == 'Aging' %}selected{% endif %}>⏳ Fine Lines & Loss of Firmness</option>
+          <option value="No Major Concern" {% if profile and profile.concern == 'No Major Concern' %}selected{% endif %}>🌿 Healthy Maintenance & Radiance</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-block" style="margin-top: 0.5rem;">
+        Generate Clinical Protocol 🧪
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- The Derma Standard (4 Clinical Pillars) -->
+<div class="clinical-pillars-bar">
+  <div class="pillar-card">
+    <div class="pillar-icon">🧪</div>
+    <div>
+      <div class="pillar-title">Potent Active %</div>
+      <div class="pillar-desc">Clinically effective concentrations</div>
+    </div>
+  </div>
+
+  <div class="pillar-card">
+    <div class="pillar-icon">🩺</div>
+    <div>
+      <div class="pillar-title">Dermatologist Designed</div>
+      <div class="pillar-desc">Formulated by expert dermatologists</div>
+    </div>
+  </div>
+
+  <div class="pillar-card">
+    <div class="pillar-icon">🌿</div>
+    <div>
+      <div class="pillar-title">100% Fragrance Free</div>
+      <div class="pillar-desc">Zero harmful toxins or dyes</div>
+    </div>
+  </div>
+
+  <div class="pillar-card">
+    <div class="pillar-icon">🔬</div>
+    <div>
+      <div class="pillar-title">Proven Results</div>
+      <div class="pillar-desc">Science-backed dermal efficacy</div>
+    </div>
+  </div>
+</div>
+
+<!-- Shop by Skin Concern (Derma Co Style) -->
+<section class="concern-grid-section">
+  <div class="page-header" style="text-align: left; margin-bottom: 1.5rem;">
+    <span class="tagline">🎯 Targeted Solutions</span>
+    <h2 style="font-size: 1.85rem; margin-bottom: 0.35rem;">Shop by Skin Concern</h2>
+    <p style="margin: 0; max-width: none;">Explore clinical treatments formulated for your specific skin condition:</p>
+  </div>
+
+  <div class="concern-cards-grid">
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">🔴</div>
+      <div class="concern-visual-title">Acne & Pores</div>
+      <div class="concern-visual-actives">Salicylic Acid • Niacinamide</div>
+    </a>
+
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">☀️</div>
+      <div class="concern-visual-title">Pigmentation</div>
+      <div class="concern-visual-actives">Vitamin C • Alpha Arbutin</div>
+    </a>
+
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">💧</div>
+      <div class="concern-visual-title">Dry & Barrier</div>
+      <div class="concern-visual-actives">Ceramides • Hyaluronic Acid</div>
+    </a>
+
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">⏳</div>
+      <div class="concern-visual-title">Anti-Aging</div>
+      <div class="concern-visual-actives">0.3% Retinol • Peptides</div>
+    </a>
+
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">👁️</div>
+      <div class="concern-visual-title">Dark Circles</div>
+      <div class="concern-visual-actives">Caffeine 5% • EGCG</div>
+    </a>
+
+    <a href="{{ url_for('products') }}" class="concern-visual-card">
+      <div class="concern-visual-icon">🛡️</div>
+      <div class="concern-visual-title">Sun Defense</div>
+      <div class="concern-visual-actives">SPF 50+ PA++++</div>
+    </a>
+  </div>
+</section>
+
+<!-- Clinical Diagnostic & Care Suite -->
+<div style="margin-bottom: 3.5rem;">
+  <div class="page-header" style="margin-bottom: 2rem;">
+    <span class="tagline">Clinical Tools</span>
+    <h2>Complete Dermatological Suite</h2>
+    <p>Everything you need to track, optimize, and cultivate healthy, radiant skin backed by science.</p>
+  </div>
+
+  <div class="grid-3">
+    <a href="{{ url_for('products') }}" class="feature-card">
+      <div class="feature-icon">🛍️</div>
+      <h3>30 Curated Formulations</h3>
+      <p>Explore 30 clinically formulated cleansers, active serums, barrier creams, and SPF defense.</p>
+    </a>
+
+    <a href="{{ url_for('routine') }}" class="feature-card">
+      <div class="feature-icon">🧴</div>
+      <h3>AM / PM Regimen Builder</h3>
+      <p>Log morning sun protection and evening restorative actives step-by-step.</p>
+    </a>
+
+    <a href="{{ url_for('reminder') }}" class="feature-card">
+      <div class="feature-icon">⏰</div>
+      <h3>SPF & Actives Alarms</h3>
+      <p>Never forget SPF re-application, evening retinol, or weekly hydration masks.</p>
+    </a>
+
+    <a href="{{ url_for('expenses') }}" class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3>Investment & Expense Tracker</h3>
+      <p>Track your beauty expenses, product costs, and monitor your monthly budget.</p>
+    </a>
+
+    <a href="{{ url_for('appointment') }}" class="feature-card">
+      <div class="feature-icon">🩺</div>
+      <h3>Dermatologist Visits</h3>
+      <p>Keep track of upcoming skin consultations, clinical facials, and doctor notes.</p>
+    </a>
+
+    <a href="{{ url_for('profile') }}" class="feature-card">
+      <div class="feature-icon">👤</div>
+      <h3>Personal Skin ID</h3>
+      <p>Save your personal skin profile, age, sensitivities, and core goals in one place.</p>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function applyProfile(type, concern) {
+    if (type) document.getElementById('skin_type').value = type;
+    if (concern) document.getElementById('concern').value = concern;
+    const box = document.getElementById('analyzer');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+{% endblock %}

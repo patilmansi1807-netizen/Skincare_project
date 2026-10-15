@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}GlowCare | Consult Certified Dermatologists & Clinics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <span class="tagline">🩺 Expert Clinical Care</span>
+  <h1>Dermatologist & Clinic Consultations</h1>
+  <p>Schedule doctor consultations, professional chemical peels, HydraFacials, and clinical skin assessments.</p>
+</div>
+
+<div class="grid-2">
+  <!-- Schedule Appointment Form -->
+  <div class="card" style="height: fit-content;">
+    <h3 class="card-title">
+      <span>📅</span> Book / Log Consultation
+    </h3>
+
+    <form action="{{ url_for('appointment') }}" method="POST" id="appointmentForm">
+      <div class="form-group">
+        <label class="form-label" for="name">Doctor / Clinic / Esthetician Name</label>
+        <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Dr. Priya Verma - Skin & Laser Clinic" required>
+      </div>
+
+      <div class="grid-2" style="gap: 1rem; margin-bottom: 0;">
+        <div class="form-group">
+          <label class="form-label" for="date">Appointment Date</label>
+          <input type="date" id="date" name="date" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="time">Time</label>
+          <input type="time" id="time" name="time" class="form-input" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reason">Consultation Purpose / Treatment Goal</label>
+        <textarea id="reason" name="reason" class="form-textarea" placeholder="e.g. Routine skin barrier assessment, cystic acne evaluation, or peel consultation." required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Confirm Appointment 🩺</button>
+    </form>
+
+    <!-- Quick Appointment Type Presets -->
+    <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1.5px solid var(--border-subtle);">
+      <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.6rem;">
+        ⚡ Fast Clinical Presets:
+      </span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setApptPreset('Dr. Verma GlowCare Clinic', 'Acne Evaluation & Actives Protocol')">🩺 Acne Consultation</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setApptPreset('Aura Dermal Studio', 'Deep Pore HydraFacial & Active Infusion')">✨ HydraFacial Session</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setApptPreset('City Skin Center', 'Salicylic / Glycolic Chemical Peel')">🧪 Chemical Peel</button>
+        <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;" onclick="setApptPreset('Apex Dermatology Institute', 'Annual Full-Body Skin & Barrier Health Exam')">🔍 Annual Skin Check</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointments List -->
+  <div>
+    <h3 style="font-size: 1.35rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; color: var(--derma-navy);">
+      <span>Scheduled Consultations</span>
+      <span class="badge badge-sage">{{ appointments|length }} Booked</span>
+    </h3>
+
+    {% if appointments %}
+      {% for item in appointments %}
+        <div class="item-card">
+          <div class="item-content">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+              <span class="badge badge-gold">📅 {{ item.date }}</span>
+              <span class="badge badge-time">🕒 {{ item.time }}</span>
+            </div>
+
+            <strong style="font-size: 1.05rem; display: block; margin-top: 0.4rem; color: var(--derma-navy);">
+              {{ item.name }}
+            </strong>
+
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.5;">
+              <strong>Treatment:</strong> {{ item.reason }}
+            </p>
+          </div>
+
+          <a href="{{ url_for('delete_appointment', id=item.id) }}" class="btn-danger" onclick="return confirm('Cancel this consultation?');" title="Cancel Appointment">
+            ✕ Cancel
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="card empty-state">
+        <div class="empty-state-icon">🩺</div>
+        <h3>No Appointments Scheduled</h3>
+        <p>Keep track of your clinical treatments and certified dermatologist consultations easily.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function setApptPreset(name, reason) {
+    document.getElementById('name').value = name;
+    document.getElementById('reason').value = reason;
+    
+    // Set default date to tomorrow if empty
+    const dateInput = document.getElementById('date');
+    if (!dateInput.value) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+    
+    const timeInput = document.getElementById('time');
+    if (!timeInput.value) {
+      timeInput.value = '11:00';
+    }
+
+    const form = document.getElementById('appointmentForm');
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+{% endblock %}
